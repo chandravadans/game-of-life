@@ -1,5 +1,7 @@
 package life;
 
+import life.generator.DefaultGenerator;
+import life.generator.Generator;
 import life.model.DefaultMap;
 import life.model.Map;
 
@@ -21,7 +23,21 @@ public class Main {
                     map.setCellState(i, j, r.nextBoolean());
                 });
             });
-            System.out.println(map);
+            System.out.println("Initial Map: \n" + map);
+
+            int numGenerations = in.nextInt();
+            Generator generator = new DefaultGenerator();
+            System.out.println("Generation # " + numGenerations + ": \n" + generateNthMap(generator, map, numGenerations));
+        }
+    }
+
+    static Map generateNthMap(Generator generator, Map initial, int n) {
+        if (n == 0) {
+            return initial;
+        } else {
+            Map next = generator.nextMap(initial);
+            System.out.println("Next generation: \n " + next);
+            return generateNthMap(generator, next, n - 1);
         }
     }
 }

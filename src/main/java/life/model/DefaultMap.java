@@ -16,14 +16,50 @@ public class DefaultMap implements Map {
 
     @Override
     public void setCellState(int x, int y, boolean alive) {
-        assert x >= 0 && x < dimension && y > 0 &&  y < dimension;
+        assert x >= 0 && x < dimension && y >= 0 &&  y < dimension;
 
         internalState[x][y] = alive;
     }
 
+    /*@Override
+    public Map copy() {
+        Map cloned = new Builder(this.getDimension()).build();
+        range(0, cloned.getDimension()).forEach(i -> {
+            range(0, cloned.getDimension()).forEach(j -> {
+                cloned.setCellState(i, j, this.getCellState(i, j));
+            });
+        });
+        return cloned;
+    }*/
+
+    @Override
+    public boolean getCellState(int x, int y) {
+        assert x >= 0 && x < dimension && y >= 0 && y < dimension;
+
+        return internalState[x][y];
+    }
+
+    @Override
+    public int getDimension() {
+        return this.dimension;
+    }
+
     @Override
     public boolean getNeighborState(int x, int y, Direction direction) {
-        return false;
+        int dx = direction.getDx();
+        int dy = direction.getDy();
+
+        int targetX = (x + dx) % dimension;
+        int targetY = (y + dy) % dimension;
+
+        if (targetX < 0) {
+            targetX = dimension + targetX;
+        }
+
+        if (targetY < 0) {
+            targetY = dimension + targetY;
+        }
+        return internalState[targetX][targetY];
     }
 
     public static class Builder {
@@ -34,7 +70,7 @@ public class DefaultMap implements Map {
             this.dimensions = dimensions;
         }
 
-        public Map build() {
+        public DefaultMap build() {
             return new DefaultMap(this);
         }
 
@@ -48,11 +84,8 @@ public class DefaultMap implements Map {
         StringBuilder sb = new StringBuilder();
         range(0,dimension).forEach(i -> {
             range(0,dimension).forEach(j -> {
-                if(internalState[i][j]) {
-                    sb.append(ALIVE_CHAR);
-                } else {
-                    sb.append(DEAD_CHAR);
-                }
+                sb.append(internalState[i][j] ? ALIVE_CHAR : DEAD_CHAR);
+                sb.append("|");
             });
             sb.append("\n");
         });
