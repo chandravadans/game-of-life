@@ -1,5 +1,8 @@
 package life;
 
+import life.model.DefaultMap;
+import life.model.Map;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -12,16 +15,13 @@ public class Main {
             int n = in.nextInt();
             int seed = in.nextInt();
             Random r = new Random(seed);
+            Map map = new DefaultMap.Builder(n).build();
             range(0, n).forEach(i -> {
                 range(0, n).forEach(j -> {
-                    if (r.nextBoolean()) {
-                        System.out.print("O");
-                    } else {
-                        System.out.print(" ");
-                    }
+                    map.setCellState(i, j, r.nextBoolean());
                 });
-                System.out.println();
             });
+            System.out.println(map);
         }
     }
 }
